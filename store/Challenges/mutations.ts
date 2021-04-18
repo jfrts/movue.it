@@ -1,4 +1,4 @@
-import { Mutations } from "./types";
+import { MutationsInterface } from "./types";
 
 export default {
 	SET_CURRENT_CHALLENGE_INDEX(state, index) {
@@ -44,4 +44,4 @@ export default {
 		state.experience = cookie.experience;
 		state.completedChallenges = cookie.completedChallenges;
 	}
-} as Mutations;
+} as MutationsInterface;

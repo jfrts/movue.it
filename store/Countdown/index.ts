@@ -1,6 +1,6 @@
 import { State, Getters, Mutations, MutationsInterface } from "./types";
 
-const MINUTES = 25;
+const MINUTES = 0.05;
 
 // Estado é sempre uma função para evitar problemas com referência de memória.
 export const state = (): State => ({

@@ -5,18 +5,75 @@
 		<div class="flex flex-col w-full lg:w-1/2">
 			<Profile />
 			<CompletedChallenges />
+			<Countdown @completed="getNewChallenge" />
+
+			<button v-if="hasCountdownCompleted" disabled class="button completed">
+				Cycle completed
+			</button>
+
+			<button
+				v-else-if="isCountdownActive"
+				@click="setCountdownState(false)"
+				class="button abandon"
+			>
+				Abandon cycle
+			</button>
+
+			<button v-else @click="setCountdownState(true)" class="button start">
+				Start a cycle
+			</button>
 		</div>
 	</section>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+import { mapState, mapMutations } from "vuex";
+import { Mutations as CountdownMutations } from "@/store/Countdown/types";
+import { playAudio, sendNotification } from "@/utils";
 
 interface Head {
 	title: string;
 }
 
 export default Vue.extend({
+	computed: {
+		...mapState("Countdown", {
+			hasCountdownCompleted: "hasCompleted",
+			isCountdownActive: "isActive"
+		})
+	},
+
+	methods: {
+		...mapMutations({
+			setCountdownHasCompleted: `Countdown/${CountdownMutations.SET_HAS_COMPLETED}`,
+			setCountdownIsActive: `Countdown/${CountdownMutations.SET_IS_ACTIVE}`
+		}),
+
+		setCountdownState(flag: boolean) {
+			this.setCountdownHasCompleted(false);
+			this.setCountdownIsActive(flag);
+		},
+
+		getNewChallenge() {
+			this.setCountdownHasCompleted(true);
+
+			if (Notification?.permission === "granted") {
+				playAudio("/notification.mp3");
+				sendNotification("New Challenge!", {
+					body: "A new challenge has started! Go complete it!",
+					icon: "/favicon.ico"
+				});
+			}
+		}
+	},
+
+	mounted() {
+		if ("Notification" in window) {
+			Notification.requestPermission();
+		}
+	},
+
 	head(): Head {
 		return {
 			title: "Home | Movue.It"

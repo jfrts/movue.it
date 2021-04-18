@@ -12,12 +12,18 @@ export default {
 		],
 		link: [
 			[
-				{ rel: "icon", type: "image/png", href: "/favicon.png" },
+				{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
 				{ rel: "preconnect", href: "https://fonts.gstatic.com" },
 				{
-					rel: "stylesheet",
+					rel: "dns-prefetch",
+					href: "https://fonts.gstatic.com",
+					crossorigin: true
+				},
+				{
+					rel: "preload",
+					as: "style",
 					href:
-						"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@600&display=swap"
+						"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Play:wght@400&display=swap"
 				}
 			]
 		]
@@ -34,10 +40,9 @@ export default {
 
 	// Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
 	buildModules: [
-		// https://go.nuxtjs.dev/typescript
 		"@nuxt/typescript-build",
-		// https://go.nuxtjs.dev/tailwindcss
-		"@nuxtjs/tailwindcss"
+		"@nuxtjs/tailwindcss",
+		"@nuxtjs/google-fonts"
 	],
 
 	// Modules: https://go.nuxtjs.dev/config-modules
@@ -46,6 +51,20 @@ export default {
 	tailwindcss: {
 		jit: true,
 		viewer: false
+	},
+
+	googleFonts: {
+		display: "swap",
+		families: {
+			Inter: {
+				wght: [400, 500, 600]
+			},
+			Play: {
+				wght: [400]
+			}
+		},
+		prefetch: true,
+		preload: true
 	},
 
 	// Build Configuration: https://go.nuxtjs.dev/config-build

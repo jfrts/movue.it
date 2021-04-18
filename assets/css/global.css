@@ -12,10 +12,11 @@
 
 body {
 	font-family: "Inter", sans-serif;
+	@apply bg-background;
 }
 
-.brand-font {
-	font-family: Rajdhani;
+.display-font {
+	font-family: "Play", sans-serif;
 }
 
 .slide-fade-enter-active {
