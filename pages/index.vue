@@ -23,14 +23,24 @@
 				Start a cycle
 			</button>
 		</div>
+
+		<Card id="challenge" class="w-full lg:w-1/2" />
 	</section>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapGetters, mapMutations } from "vuex";
+
 import { Mutations as CountdownMutations } from "@/store/Countdown/types";
-import { playAudio, sendNotification } from "@/utils";
+import { Mutations as ChallengesMutations } from "@/store/Challenges/types";
+
+import {
+	playAudio,
+	sendNotification,
+	getRandomNumber,
+	scrollToElement
+} from "@/utils";
 
 interface Head {
 	title: string;
@@ -41,13 +51,16 @@ export default Vue.extend({
 		...mapState("Countdown", {
 			hasCountdownCompleted: "hasCompleted",
 			isCountdownActive: "isActive"
-		})
+		}),
+
+		...mapGetters("Challenges", ["challengesLength"])
 	},
 
 	methods: {
 		...mapMutations({
 			setCountdownHasCompleted: `Countdown/${CountdownMutations.SET_HAS_COMPLETED}`,
-			setCountdownIsActive: `Countdown/${CountdownMutations.SET_IS_ACTIVE}`
+			setCountdownIsActive: `Countdown/${CountdownMutations.SET_IS_ACTIVE}`,
+			setCurrentChallengeIndex: `Challenges/${ChallengesMutations.SET_CURRENT_CHALLENGE_INDEX}`
 		}),
 
 		setCountdownState(flag: boolean) {
@@ -56,7 +69,10 @@ export default Vue.extend({
 		},
 
 		getNewChallenge() {
+			const index = getRandomNumber(0, this.challengesLength);
+
 			this.setCountdownHasCompleted(true);
+			this.setCurrentChallengeIndex(index);
 
 			if (Notification?.permission === "granted") {
 				playAudio("/notification.mp3");
@@ -65,6 +81,10 @@ export default Vue.extend({
 					icon: "/favicon.ico"
 				});
 			}
+
+			this.$nextTick(() => {
+				scrollToElement("#challenge");
+			});
 		}
 	},
 
